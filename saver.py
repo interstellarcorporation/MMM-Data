@@ -4,8 +4,10 @@ A simple scrypt to fill our database
 @author: Quentin Lieumont
 @date : 18/04/2019
 """
+import argparse
 from datetime import datetime
-from recup import price_btc_usd
+from recup import price_usd
+import time
 import json
 import shutil
 from usefull import file_name
@@ -77,8 +79,59 @@ def write_price(link, price: float = price_btc_usd()) -> None:
 
 
 if __name__ == "__main__":
+
+    class Args:
+        def __init__(self):
+            parser = argparse.ArgumentParser()
+
+            # Positional mandatory arguments
+            parser.add_argument(
+                "Currency", help="The currency you want tu update.", type=str
+            )
+
+            # Optional arguments
+            parser.add_argument(
+                "-v",
+                "--verbose",
+                help="Verbose mod.",
+                type=bool,
+                nargs="?",
+                const=True,
+                default=False,
+            )
+            parser.add_argument("-l", "--log", help="Write logs in a file.", type=str)
+
+            self.args = parser.parse_args()
+
+        @property
+        def currency(self):
+            return self.args.Currency
+
+        @property
+        def verbose(self):
+            return self.args.verbose
+
+        @property
+        def logfile(self):
+            return self.args.log
+
+        def debug(self, msg: str):
+            if self.verbose:
+                print(msg)
+            if self.logfile:
+                with open(self.logfile, "a") as f:
+                    f.write(msg)
+
+
+    args = Args()
+    sleep_time = 30  # seconds
     while True:
-        datafile = file_name(datetime.now().date())
-        current_price = price_btc_usd()
+        datafile = file_name(args.currency, datetime.now().date())
+        current_price = price_usd(args.currency)
+        args.debug(f"Trying {current_price} into {datafile}")
         if need_write(datafile, current_price):
+            args.debug(" -> Success, writing")
             write_price(datafile, current_price)
+        else:
+            args.debug(" -> Already up to date")
+        time.sleep(sleep_time)

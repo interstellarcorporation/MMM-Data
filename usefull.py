@@ -15,14 +15,14 @@ def formatted_price(p) -> str:
     return "{} USD/BTC".format(p)
 
 
-def formatred_time(t: datetime) -> str:
+def formatted_time(t: datetime) -> str:
     return "{}h {}m {}s".format(
         str(t.hour).zfill(2), str(t.minute).zfill(2), str(t.second).zfill(2)
     )
 
 
 def formatted_price_and_time(t, p) -> str:
-    return "{}: {}".format(formatred_time(t), formatted_price(p))
+    return "{}: {}".format(formatted_time(t), formatted_price(p))
 
 
 # JSON parser
@@ -59,7 +59,7 @@ def is_date(_file_name: str) -> datetime.date or None:
     the date format is : ddmmyyyy
     :return : date if date found else None
     """
-    # removing '.JSON'
+    # removing '.json'
     _file_name = _file_name[:-5]
     if len(_file_name) != 8:
         return None
@@ -76,10 +76,12 @@ def is_date(_file_name: str) -> datetime.date or None:
         return datetime.date(y, m, d)
 
 
-def file_name(date: datetime.date) -> str:
-    return "data/" + merge_date(date) + ".json"
+def file_name(currency: str, date: datetime.date) -> str:
+    return f"data/{currency}/{merge_date(date)}.json"
 
 
+# get_price : WIP
+"""
 def get_price(
     date: datetime, flexibility: datetime.timedelta = datetime.timedelta(0)
 ) -> float or None:
@@ -128,3 +130,4 @@ def get_price(
                 return data[time_table.index(closest)]["price"]
             else:
                 return None
+"""
