@@ -16,7 +16,7 @@ from usefull import file_name
 _dirty_global: bool = False  # <- if the file isn't created yet
 
 
-def need_write(link, price: float = price_btc_usd()) -> bool:
+def need_write(link, price: float = price_usd("btc")) -> bool:
     """
     As the price changed ?
     :param link: link to the file, create a file if it exit
@@ -46,7 +46,7 @@ def need_write(link, price: float = price_btc_usd()) -> bool:
         return True
 
 
-def write_price(link, price: float = price_btc_usd()) -> None:
+def write_price(link, price: float = price_usd("btc")) -> None:
     """
     Create new time/price dict and add it to the json
     :param link: link to the file
@@ -54,11 +54,11 @@ def write_price(link, price: float = price_btc_usd()) -> None:
     :return: None
     """
     global _dirty_global
-    time = datetime.now().time()
+    _time = datetime.now().time()
     formated_time = (
         "{"
         + '"hour": {h}, "minute": {m}, "second": {s}'.format(
-            h=time.hour, m=time.minute, s=time.second
+            h=_time.hour, m=_time.minute, s=_time.second
         )
         + "}"
     )
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
             # Positional mandatory arguments
             parser.add_argument(
-                "Currency", help="The currency you want tu update.", type=str
+                "Currency", help="The currency you want to update.", type=str
             )
 
             # Optional arguments
@@ -121,7 +121,6 @@ if __name__ == "__main__":
             if self.logfile:
                 with open(self.logfile, "a") as f:
                     f.write(msg)
-
 
     args = Args()
     sleep_time = 30  # seconds
