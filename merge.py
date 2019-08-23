@@ -1,4 +1,5 @@
-from usefull import get_json, is_date, merge_date, file_name
+import json
+from usefull import get_json, is_date, file_name
 import os
 import datetime
 
@@ -88,9 +89,9 @@ if __name__ == "__main__":
         def logfile(self):
             return self.args.log
 
-        def out(self, msg: str):
+        def _out(self, msg: str):
             if self.output:
-                with open(self.output, "a") as f:
+                with open(self.output, "w") as f:
                     f.write(msg + "\n")
             else:
                 print(msg)
@@ -102,6 +103,27 @@ if __name__ == "__main__":
                 with open(self.logfile, "a") as f:
                     f.write(msg + "\n")
 
+        def run(self):
+            _all_json = []
+            for file in self.dates:
+                try:
+                    curr_json = get_json(file)
+                    self.debug(f"File {file} opened.")
+                    for e in curr_json:
+                        e["time"].update({
+                            "year": int(file[-9:-5]),
+                            "month": int(file[-11:-9]),
+                            "day": int(file[-13:-11])
+                        })
+                        _all_json.append(e)
+                except FileNotFoundError:
+                    if self.ignore:
+                        self.debug(f"File {file} not found, ignored.")
+                    else:
+                        raise FileNotFoundError(f"File {file} not found.")
+
+            self._out(json.dumps(_all_json, indent=4, separators=(",", ": ")))
+
+
     args = Args()
-    for e in args.dates:
-        args.out(e)
+    args.run()
