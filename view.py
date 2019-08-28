@@ -127,15 +127,16 @@ if __name__ == "__main__":
             _fig, _ax = plt.subplots()
 
             _dates = [
-                        datetime.datetime(
-                            year=e["time"]["year"],
-                            month=e["time"]["month"],
-                            day=e["time"]["day"],
-                            hour=e["time"]["hour"],
-                            minute=e["time"]["minute"],
-                            second=e["time"]["second"]
-                                          )
-                        for e in _all_data]
+                datetime.datetime(
+                    year=e["time"]["year"],
+                    month=e["time"]["month"],
+                    day=e["time"]["day"],
+                    hour=e["time"]["hour"],
+                    minute=e["time"]["minute"],
+                    second=e["time"]["second"],
+                )
+                for e in _all_data
+            ]
             _prices = [e["price"] for e in _all_data]
             _ax.plot(_dates, _prices, "k+")
 
