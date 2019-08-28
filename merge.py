@@ -110,11 +110,13 @@ if __name__ == "__main__":
                     curr_json = get_json(file)
                     self.debug(f"File {file} opened.")
                     for e in curr_json:
-                        e["time"].update({
-                            "year": int(file[-9:-5]),
-                            "month": int(file[-11:-9]),
-                            "day": int(file[-13:-11])
-                        })
+                        e["time"].update(
+                            {
+                                "year": int(file[-9:-5]),
+                                "month": int(file[-11:-9]),
+                                "day": int(file[-13:-11]),
+                            }
+                        )
                         _all_json.append(e)
                 except FileNotFoundError:
                     if self.ignore:
@@ -123,7 +125,6 @@ if __name__ == "__main__":
                         raise FileNotFoundError(f"File {file} not found.")
 
             self._out(json.dumps(_all_json, indent=4, separators=(",", ": ")))
-
 
     args = Args()
     args.run()
