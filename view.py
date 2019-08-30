@@ -139,6 +139,7 @@ if __name__ == "__main__":
             ]
             _prices = [e["price"] for e in _all_data]
             _ax.plot(_dates, _prices, "k+")
+            _fig.autofmt_xdate()
 
             self.debug("\n".join(map(str, _dates)))
             self.debug(f"Graph generated with {len(_prices)} points")
